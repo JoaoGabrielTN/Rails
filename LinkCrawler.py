@@ -22,3 +22,16 @@ def getInternalLinks(bs, includeUrl):
 
     return internalLinks
 
+def getExternalLinks(bs, excludeUrl):
+    externalLinks = []
+    for link in bs.find_all('a', href=re.compile('^(http|www)((?!'+excludeUrl+').)*$')):
+        if link.attrs['href'] is not None:
+            if link.attrs['href'] not in externalLinks:
+                externalLinks.append(link.attrs['href'])
+
+    return eternalLinks
+
+def getRandomExternalLink(startingPage):
+    html = urlopen(startingPage)
+    bs = BeautifulSoup(html, 'html.parser')
+    externalLinks = getExternalLinks(bs, urlparse(startingPage).netloc)
